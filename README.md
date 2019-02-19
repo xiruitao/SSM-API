@@ -24,9 +24,9 @@ mvn archetype:generate -DgroupId=org.seckill -DartifactId=seckill -DarchetypeArt
 
 slf4j-api、logback-core、logback-classic
 
-2.数据库相关依赖，使用mybatis、mysql，连接池使用c3p0
+2.数据库相关依赖，使用mybatis、mysql，连接池使用druid
 
-mysql-connector-java、c3p0、mybatis、mybatis-spring
+mysql-connector-java、druid、mybatis、mybatis-spring
 
 3.Servlet web相关依赖
 
@@ -137,21 +137,23 @@ mybatis整合spring，在resources文件夹下创建spring层，放置与spring�
     <context:property-placeholder location="classpath:jdbc.properties"/>
 
     <!--2:数据库连接池-->
-    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
         <!--配置连接池属性-->
-        <property name="driverClass" value="${driver}"/>
-        <property name="jdbcUrl" value="${url}"/>
-        <property name="user" value="${user}"/>
+        <property name="driverClassName" value="${driver}"/>
+        <property name="url" value="${url}"/>
+        <property name="username" value="${user}"/>
         <property name="password" value="${password}"/>
-        <!--连接池c3p0私有属性-->
-        <property name="maxPoolSize" value="30"/>
-        <property name="minPoolSize" value="10"/>
+        
+        <property name="initialSize" value="10"/>
+        <property name="maxActive" value="30"/>
+        <property name="minIdle" value="10"/>
         <!--关闭连接后不自动commit，默认false-->
-        <property name="autoCommitOnClose" value="false"/>
-        <!--获取连接超时时间-->
-        <property name="checkoutTimeout" value="1000"/>
-        <!--当获取连接失败重试次数-->
-        <property name="acquireRetryAttempts" value="2"/>
+        <property name="defaultAutoCommit" value="false"/>
+
+        <property name="maxWait" value="1000"/>
+
+        <property name="timeBetweenConnectErrorMillis" value="60000"/>
+        <property name="minEvictableIdleTimeMillis" value="300000" />
     </bean>
 
     <!--约定大于配置-->
